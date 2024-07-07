@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 
-class CalificacionScreen extends StatefulWidget {
+class AdminScreen extends StatefulWidget {
+  //final int estudianteId;
+
+  //EstudiantesScreen({required this.estudianteId});
 
   @override
-  _CalificacionScreenState createState() => _CalificacionScreenState();
+  _AdminScreenState createState() => _AdminScreenState();
 }
 
-class _CalificacionScreenState extends State<CalificacionScreen> {
-  Map<String, dynamic>? _calificacion;
+class _AdminScreenState extends State<AdminScreen> {
+  Map<String, dynamic>? _Admin;
   bool _isLoading = true;
 
   @override
-  void initState() {
-    super.initState();
-  //  _loadEstudiante();
-  }
+  //void initState() {
+    //super.initState();
+    //_loadEstudiante();
+  //}
 
-  //Future<void> _loadCalificacion() async {
+  //Future<void> _loadEstudiante() async {
     //DatabaseHelper dbHelper = DatabaseHelper();
-    //final calificacion = await dbHelper.getEstudianteById(widget.calificacionId);
+    //final estudiante = await dbHelper.getEstudianteById(widget.estudianteId);
     //setState(() {
-    //  _calificacion = calificacion;
-    //  _isLoading = false;
+      //_estudiante = estudiante;
+      //_isLoading = false;
     //});
   //}
 
@@ -37,7 +40,7 @@ class _CalificacionScreenState extends State<CalificacionScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('UTC', style: TextStyle(
+              Text('Admin', style: TextStyle(
                 fontFamily: 'Hanuman',
                 fontSize: 30,
                 fontWeight: FontWeight.w300,
@@ -49,8 +52,8 @@ class _CalificacionScreenState extends State<CalificacionScreen> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : _calificacion == null
-          ? Center(child: Text('No se encontró información del estudiante'))
+          //: _estudiante == null
+          //? Center(child: Text('No se encontró información del estudiante'))
           : Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -77,21 +80,6 @@ class _CalificacionScreenState extends State<CalificacionScreen> {
               'assets/img/perfil.png',
               width: 100,
             ),
-            Text('Nombre: ${_calificacion!['nombre']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Edad: ${_calificacion!['edad']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Carrera: ${_calificacion!['carrera']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Grupo: ${_calificacion!['grupo']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Matrícula: ${_calificacion!['matricula']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Aquí puedes definir lo que quieres que haga el botón

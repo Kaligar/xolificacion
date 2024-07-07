@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:untitled1/src/routes/maestro.dart';
 import 'src/data/database_helper.dart';
 import 'src/routes/ingreso.dart'; // Añada esta línea al inicio del archivo
+import 'src/routes/admin.dart';
 
 //funcion pricipal, inicializacio de la aplicacion
 void main() {
@@ -44,19 +46,46 @@ class _LoginScreenState extends State<LoginScreen> {
     Map<String, dynamic>? user = await dbHelper.getUser(username, password);
 
     if (user != null) {
-      // Login successful, save the student ID and navigate to EstudiantesScreen
+      String role = user['role'] as String;
       int? estudianteId = user['estudiante_id'] as int?;
-      if (estudianteId != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EstudiantesScreen(estudianteId: estudianteId),
-          ),
-        );
-      } else {
-        setState(() {
-          _message = 'Error: No student ID associated with this user';
-        });
+
+      switch (role) {
+        case 'estudiante':
+          if (estudianteId != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EstudiantesScreen(estudianteId: estudianteId),
+              ),
+            );
+          } else {
+            setState(() {
+              _message = 'Error: No student ID associated with this user';
+            });
+          }
+          break;
+          case 'maestro':
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MaestroScreen(),
+              
+            ),
+
+          );
+          break;
+        case 'admin':
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AdminScreen(),
+            ),
+          );
+          break;
+        default:
+          setState(() {
+            _message = 'Role not recognized';
+          });
       }
     } else {
       setState(() {

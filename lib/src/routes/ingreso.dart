@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
+import 'calificaciones.dart';
 
 class EstudiantesScreen extends StatefulWidget {
   final int estudianteId;
