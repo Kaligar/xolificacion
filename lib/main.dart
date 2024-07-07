@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled1/src/routes/maestro.dart';
 import 'src/data/database_helper.dart';
-import 'src/routes/ingreso.dart'; // Añada esta línea al inicio del archivo
+import 'src/routes/alumno.dart'; // Añada esta línea al inicio del archivo
 import 'src/routes/admin.dart';
 
 //funcion pricipal, inicializacio de la aplicacion
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/src/routes/ingreso.dart': (context) => EstudiantesScreen(estudianteId: ModalRoute.of(context)!.settings.arguments as int),
+        '/src/routes/alumno.dart': (context) => EstudiantesScreen(estudianteId: ModalRoute.of(context)!.settings.arguments as int),
       },
       home: LoginScreen(),
     );
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EstudiantesScreen(estudianteId: estudianteId),
+                  builder: (context) => EstudiantesScreen(estudianteId: estudianteId),
               ),
             );
           } else {

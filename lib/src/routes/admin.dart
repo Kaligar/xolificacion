@@ -12,9 +12,9 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
   Map<String, dynamic>? _Admin;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
-  @override
+  //@override
   //void initState() {
     //super.initState();
     //_loadEstudiante();
@@ -79,21 +79,6 @@ class _AdminScreenState extends State<AdminScreen> {
             Image.asset(
               'assets/img/perfil.png',
               width: 100,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Aquí puedes definir lo que quieres que haga el botón
-                print('Botón presionado');
-              },
-              child: Text('calificaciones', style: TextStyle(
-                fontFamily: 'Hanuman',
-                fontSize: 30,
-                fontWeight: FontWeight.w300,
-                color: Color(0xFF000000),
-              )),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(30, 50),
-              ),
             ),
           ],
         ),
