@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/src/routes/ingreso.dart': (context) => IngresoScreen(), // Asegúrese de importar IngresoScreen
+        '/src/routes/ingreso.dart': (context) => EstudiantesScreen(estudianteId: ModalRoute.of(context)!.settings.arguments as int),
       },
       home: LoginScreen(),
     );
@@ -36,37 +36,36 @@ class _LoginScreenState extends State<LoginScreen> {
   String _message = '';
 
   // Obtiene los valores
-  Future<void> _Login() async {
-    String username =_usernameController.text;
-    String password =_usernameController.text;
-
-    // utiliza una instancia de DatabaseHelper
-    DatabaseHelper dbHelper = DatabaseHelper();
-    Map<String, dynamic>? user = await dbHelper.getUsers(username, password);
-
-    if(user != null) {
-      setState(() {
-        Navigator.pushNamed(context, '/src/routes/ingreso.dart');
-      });
-    }else{
-      setState(() {
-        _message = 'invalid credentials';
-      });
-    }
-  }
-  // utiliza una instancia de DatabaseHelper
-  //Ingresion de datos
-  Future<void> _register() async{
+  Future<void> _login() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
     DatabaseHelper dbHelper = DatabaseHelper();
-    await dbHelper.insertUser({'username': username, 'password': password});
+    Map<String, dynamic>? user = await dbHelper.getUser(username, password);
 
-    setState(() {
-      _message = 'user registered';
-    });
+    if (user != null) {
+      // Login successful, save the student ID and navigate to EstudiantesScreen
+      int? estudianteId = user['estudiante_id'] as int?;
+      if (estudianteId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EstudiantesScreen(estudianteId: estudianteId),
+          ),
+        );
+      } else {
+        setState(() {
+          _message = 'Error: No student ID associated with this user';
+        });
+      }
+    } else {
+      setState(() {
+        _message = 'Invalid credentials';
+      });
+    }
   }
+
+
 
   //construccion de la interface usuario
   @override
@@ -150,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
               ElevatedButton(
 
-                onPressed: _Login,
+                onPressed: _login,
                 child: Text('Ingresar', style: TextStyle(
                   fontFamily: 'Hanuman',
                   fontSize: 30,
@@ -164,10 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
               ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _register,
-                child: Text('register'),),
+
 
               SizedBox(height: 30),
               Text(

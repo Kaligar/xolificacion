@@ -46,7 +46,8 @@ flutter_icons:
   android: true
   ios: true
   image_path_android: 'assets/img/UTCLOGO.png'
-  image_path_ios: 'assets/img/UTCLOGO.png' # The "flutter_lints" package below contains a set of recommended lints to
+  image_path_ios: 'assets/img/UTCLOGO.png'
+  # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
@@ -73,6 +74,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/img/UTCLOGO.png
+    - assets/img/perfil.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
