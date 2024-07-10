@@ -2,29 +2,32 @@ import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 
 class CalificacionScreen extends StatefulWidget {
+  final int estudianteId;
+
+  CalificacionScreen({required this.estudianteId});
 
   @override
   _CalificacionScreenState createState() => _CalificacionScreenState();
 }
 
 class _CalificacionScreenState extends State<CalificacionScreen> {
-  Map<String, dynamic>? _calificacion;
+  List<Map<String, dynamic>>? _calificaciones;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-  //  _loadEstudiante();
+    _loadCalificaciones();
   }
 
-  //Future<void> _loadCalificacion() async {
-    //DatabaseHelper dbHelper = DatabaseHelper();
-    //final calificacion = await dbHelper.getEstudianteById(widget.calificacionId);
-    //setState(() {
-    //  _calificacion = calificacion;
-    //  _isLoading = false;
-    //});
-  //}
+  Future<void> _loadCalificaciones() async {
+    DatabaseHelper dbHelper = DatabaseHelper();
+    final calificaciones = await dbHelper.getCalificacionesById(widget.estudianteId);
+    setState(() {
+      _calificaciones = calificaciones;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +40,21 @@ class _CalificacionScreenState extends State<CalificacionScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('UTC', style: TextStyle(
-                fontFamily: 'Hanuman',
-                fontSize: 30,
-                fontWeight: FontWeight.w300,
-                color: Color(0xFFFFFFFF),
-              )),
+              Text('UTC',
+                  style: TextStyle(
+                    fontFamily: 'Hanuman',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w300,
+                    color: Color(0xFFFFFFFF),
+                  )),
             ],
           ),
         ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : _calificacion == null
-          ? Center(child: Text('No se encontró información del estudiante'))
+          : _calificaciones == null || _calificaciones!.isEmpty
+          ? Center(child: Text('No se encontraron calificaciones'))
           : Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -59,52 +63,35 @@ class _CalificacionScreenState extends State<CalificacionScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
-
-                print('');
               },
-              child: Text('salir', style: TextStyle(
-                fontFamily: 'Hanuman',
-                fontSize: 30,
-                fontWeight: FontWeight.w300,
-                color: Color(0xFF000000),
-              )),
+              child: Text('Salir',
+                  style: TextStyle(
+                    fontFamily: 'Hanuman',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w300,
+                    color: Color(0xFF000000),
+                  )),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(30, 50),
               ),
             ),
-            SizedBox(height: 8),
-            Image.asset(
-              'assets/img/perfil.png',
-              width: 100,
-            ),
-            Text('Nombre: ${_calificacion!['nombre']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Edad: ${_calificacion!['edad']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Carrera: ${_calificacion!['carrera']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Grupo: ${_calificacion!['grupo']}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text('Matrícula: ${_calificacion!['matricula']}',
-                style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Aquí puedes definir lo que quieres que haga el botón
-                print('Botón presionado');
-              },
-              child: Text('calificaciones', style: TextStyle(
-                fontFamily: 'Hanuman',
-                fontSize: 30,
-                fontWeight: FontWeight.w300,
-                color: Color(0xFF000000),
-              )),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(30, 50),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _calificaciones!.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Materia: ${_calificaciones![index]['nombre']}',
+                          style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 8),
+                      Text('Calificación: ${_calificaciones![index]['calificacion']}',
+                          style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 20),
+                    ],
+                  );
+                },
               ),
             ),
           ],

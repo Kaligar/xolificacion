@@ -101,16 +101,17 @@ class _EstudiantesScreenState extends State<EstudiantesScreen> {
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          // Aquí puedes definir lo que quieres que haga el botón
-                          print('Botón presionado');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CalificacionScreen(estudianteId: widget.estudianteId)),
+                          );
                         },
-                        child: Text('calificaciones',
-                            style: TextStyle(
-                              fontFamily: 'Hanuman',
-                              fontSize: 30,
-                              fontWeight: FontWeight.w300,
-                              color: Color(0xFF000000),
-                            )),
+                        child: Text('calificaciones', style: TextStyle(
+                          fontFamily: 'Hanuman',
+                          fontSize: 30,
+                          fontWeight: FontWeight.w300,
+                          color: Color(0xFF000000),
+                        )),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(30, 50),
                         ),

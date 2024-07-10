@@ -58,6 +58,7 @@ class DatabaseHelper {
         await db.insert('admin', {'id': 1, 'nombre': 'Admin Principal'});
 
         await db.insert('users', {'id': 1, 'username': 'estudiante', 'password': 'estudiante', 'estudiante_id': 1, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
+        await db.insert('users', {'id': 4, 'username': 'estudiante2', 'password': 'estudiante2', 'estudiante_id': 2, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
         await db.insert('users', {'id': 2, 'username': 'maestro', 'password': 'maestro', 'estudiante_id': null, 'maestro_id': 1, 'admin_id': null, 'role': 'maestro'});
         await db.insert('users', {'id': 3, 'username': 'admin', 'password': 'admin', 'estudiante_id': null, 'maestro_id': null, 'admin_id': 1, 'role': 'admin'});
 
@@ -66,6 +67,7 @@ class DatabaseHelper {
 
         await db.insert('calificaciones', {'id': 1, 'estudiante_id': 1, 'asignatura_id': 1, 'calificacion': 85.5});
         await db.insert('calificaciones', {'id': 2, 'estudiante_id': 2, 'asignatura_id': 2, 'calificacion': 90.0});
+        await db.insert('calificaciones', {'id': 2, 'estudiante_id': 2, 'asignatura_id': 1, 'calificacion': 80.0});
 
         await db.insert('becas', {'id': 1, 'estudiante_id': 1, 'tipo': 'Beca de excelencia', 'monto': 1000.0});
         await db.insert('becas', {'id': 2, 'estudiante_id': 2, 'tipo': 'Beca deportiva', 'monto': 500.0});
@@ -96,6 +98,16 @@ class DatabaseHelper {
       whereArgs: [id],
     );
     return results.isNotEmpty ? results.first : null;
+  }
+  Future<List<Map<String, dynamic>>> getCalificacionesById(int id) async {
+    final db = await database;
+    List<Map<String, dynamic>> results = await db.rawQuery('''
+    SELECT a.nombre, c.calificacion
+    FROM calificaciones c
+    INNER JOIN asignaturas a ON a.id = c.asignatura_id
+    WHERE c.estudiante_id = ?
+  ''', [id]);
+    return results;
   }
 
   Future<void> insertUser(Map<String, dynamic> user) async {
