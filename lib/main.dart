@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/alumno': (context) => EstudiantesScreen(estudianteId: ModalRoute.of(context)!.settings.arguments as int),
-        '/maestro': (context) => MaestroScreen(),
-        '/admin': (context) => AdminScreen(),
+        '/alumno': (context) => EstudiantesScreen(estudianteId: ModalRoute.of(context)?.settings.arguments as int? ?? 0),
+        '/maestro': (context) => MaestroScreen(maestroId: ModalRoute.of(context)?.settings.arguments as int? ?? 0),
+        '/admin': (context) => AdminScreen(adminId: ModalRoute.of(context)?.settings.arguments as int? ?? 0),
       },
       home: LoginScreen(),
     );
@@ -50,10 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushNamed(context, '/alumno', arguments: id);
             break;
           case 'maestro':
-            Navigator.pushNamed(context, '/maestro');
+            Navigator.pushNamed(context, '/maestro', arguments: id);
             break;
           case 'admin':
-            Navigator.pushNamed(context, '/admin');
+            Navigator.pushNamed(context, '/admin', arguments: id);
             break;
           default:
             _showMessage('Role not recognized');

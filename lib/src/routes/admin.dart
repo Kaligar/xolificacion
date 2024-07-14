@@ -2,32 +2,32 @@ import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 
 class AdminScreen extends StatefulWidget {
-  //final int estudianteId;
+  final int adminId;
 
-  //EstudiantesScreen({required this.estudianteId});
+  AdminScreen({required this.adminId});
 
   @override
   _AdminScreenState createState() => _AdminScreenState();
 }
 
 class _AdminScreenState extends State<AdminScreen> {
-  Map<String, dynamic>? _Admin;
-  bool _isLoading = false;
+  Map<String, dynamic>? _admin;
+  bool _isLoading = true;
 
-  //@override
-  //void initState() {
-    //super.initState();
-    //_loadEstudiante();
-  //}
+  @override
+  void initState() {
+    super.initState();
+    _loadAdmin();
+  }
 
-  //Future<void> _loadEstudiante() async {
-    //DatabaseHelper dbHelper = DatabaseHelper();
-    //final estudiante = await dbHelper.getEstudianteById(widget.estudianteId);
-    //setState(() {
-      //_estudiante = estudiante;
-      //_isLoading = false;
-    //});
-  //}
+  Future<void> _loadAdmin() async {
+    DatabaseHelper dbHelper = DatabaseHelper();
+    final admin = await dbHelper.getAdminById(widget.adminId);
+    setState(() {
+      _admin = admin;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _AdminScreenState extends State<AdminScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Admin', style: TextStyle(
+              Text('Administrador', style: TextStyle(
                 fontFamily: 'Hanuman',
                 fontSize: 30,
                 fontWeight: FontWeight.w300,
@@ -52,8 +52,8 @@ class _AdminScreenState extends State<AdminScreen> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          //: _estudiante == null
-          //? Center(child: Text('No se encontró información del estudiante'))
+          : _admin == null
+          ? Center(child: Text('No se encontró información del administrador'))
           : Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -62,10 +62,8 @@ class _AdminScreenState extends State<AdminScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
-
-                print('');
               },
-              child: Text('salir', style: TextStyle(
+              child: Text('Salir', style: TextStyle(
                 fontFamily: 'Hanuman',
                 fontSize: 30,
                 fontWeight: FontWeight.w300,
@@ -80,6 +78,10 @@ class _AdminScreenState extends State<AdminScreen> {
               'assets/img/perfil.png',
               width: 100,
             ),
+            SizedBox(height: 16),
+            Text('Nombre: ${_admin!['nombre']}'),
+            Text('ID: ${_admin!['admin_id']}'),
+            // Add more admin information as needed
           ],
         ),
       ),

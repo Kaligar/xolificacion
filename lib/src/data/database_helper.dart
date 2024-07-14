@@ -40,6 +40,9 @@ class DatabaseHelper {
       "CREATE TABLE maestro(id INTEGER PRIMARY KEY, nombre TEXT)",
     );
     await db.execute(
+        "CREATE TABLE curso(id INTEGER PRIMARY KEY, estudiante_id INTEGER, asignaturas_id INTEGER, maestro_id INTEGER, FOREIGN KEY(estudiante_id) REFERENCES estudiantes(id), FOREIGN KEY(asignaturas_id) REFERENCES asignaturas(id), FOREIGN KEY(maestro_id) REFERENCES maestro(id))"
+    );
+    await db.execute(
       "CREATE TABLE admin(id INTEGER PRIMARY KEY, nombre TEXT)",
     );
     await db.execute(
@@ -54,15 +57,22 @@ class DatabaseHelper {
   }
 
   Future<void> _insertDummyData(Database db) async {
-    await db.insert('estudiantes', {'id': 1, 'nombre': 'Juan Lopez', 'edad': 20, 'carrera': 'tecnologias de la comunicacion', 'grupo': 'TI 2', 'matricula': 23040003});
+    await db.insert('estudiantes', {'id': 1, 'nombre': 'Juan Lopez', 'edad': 20, 'carrera': 'tecnologias de la comunicacion', 'grupo': 'TI 5', 'matricula': 23040003});
+    await db.insert('estudiantes', {'id': 3, 'nombre': 'Juan Lopez', 'edad': 20, 'carrera': 'tecnologias de la comunicacion', 'grupo': 'TI 3', 'matricula': 32323});
     await db.insert('estudiantes', {'id': 2, 'nombre': 'Maria Lopez', 'edad': 22, 'carrera': 'tecnologias de la comunicacion', 'grupo': 'TI 2', 'matricula': 23040011});
 
-    await db.insert('maestro', {'id': 1, 'nombre': 'Profesor García'});
+    await db.insert('maestro', {'id': 1, 'nombre': 'Profesor juan'});
+    await db.insert('maestro', {'id': 2, 'nombre': 'Profesor García'});
     await db.insert('admin', {'id': 1, 'nombre': 'Admin Principal'});
+
+    await db.insert('curso', {'id': 1, 'estudiante_id': 1, 'asignaturas_id': 1, 'maestro_id': 1});
+    await db.insert('curso', {'id': 2, 'estudiante_id': 2, 'asignaturas_id': 2, 'maestro_id': 1});
+    await db.insert('curso', {'id': 3, 'estudiante_id': 3,'asignaturas_id':3,'maestro_id':2});
 
     await db.insert('users', {'id': 1, 'username': 'estudiante', 'password': 'estudiante', 'estudiante_id': 1, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
     await db.insert('users', {'id': 4, 'username': 'estudiante2', 'password': 'estudiante2', 'estudiante_id': 2, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
     await db.insert('users', {'id': 2, 'username': 'maestro', 'password': 'maestro', 'estudiante_id': null, 'maestro_id': 1, 'admin_id': null, 'role': 'maestro'});
+    await db.insert('users', {'id': 5, 'username': 'maestro2', 'password': 'maestro2', 'estudiante_id': null, 'maestro_id': 2, 'admin_id': null, 'role': 'maestro'});
     await db.insert('users', {'id': 3, 'username': 'admin', 'password': 'admin', 'estudiante_id': null, 'maestro_id': null, 'admin_id': 1, 'role': 'admin'});
 
     await db.insert('asignaturas', {'id': 1, 'nombre': 'Matemáticas', 'descripcion': 'Curso de Matemáticas básicas', 'cuatrimestre': 2});
@@ -112,6 +122,21 @@ class DatabaseHelper {
   WHERE c.estudiante_id = ?
   ORDER BY a.cuatrimestre, a.nombre
 ''', [id]);
+    return results;
+  }
+
+  Future<List<Map<String, dynamic>>> ListaGrupos(int maestroId) async {
+    final db = await database;
+    print('Buscando grupos para el maestro con ID: $maestroId');
+    List<Map<String, dynamic>> results = await db.rawQuery('''
+    SELECT DISTINCT e.grupo AS studentGroup, a.nombre AS nameMateria
+    FROM curso c
+    INNER JOIN asignaturas a ON a.id = c.asignaturas_id
+    INNER JOIN estudiantes e ON e.id = c.estudiante_id
+    WHERE c.maestro_id = ?
+    ORDER BY e.grupo;
+  ''', [maestroId]);
+    print('Resultados encontrados: ${results.length}');
     return results;
   }
 
