@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
+import 'calificar.dart';
 
 class MaestroScreen extends StatefulWidget {
   final int maestroId;
@@ -127,7 +128,10 @@ class _MaestroScreenState extends State<MaestroScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MaestroScreen(
+                              builder: (context) => CalificarScreen(
+                                grupo: _grupo![index]['studentGroup'],
+                                materia: _grupo![index]['nameMateria'],
+                                asignatura_id: _grupo![index]['asignatura_id'],
                               ),
                             ),
                           );

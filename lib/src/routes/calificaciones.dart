@@ -20,6 +20,7 @@
       _loadCalificaciones();
     }
 
+
     Map<int, List<Map<String, dynamic>>> _agruparPorCuatrimestre(List<Map<String, dynamic>> calificaciones) {
       Map<int, List<Map<String, dynamic>>> calificacionesPorCuatrimestre = {};
       for (var calificacion in calificaciones) {
@@ -39,7 +40,7 @@
         _calificaciones = calificaciones;
         _isLoading = false;
       });
-      print('Número de calificaciones: ${calificaciones.length}'); // Agrega esta línea para depuración
+      print('Calificaciones cargadas: $_calificaciones');
     }
 
     @override
@@ -91,32 +92,24 @@
                 child: ListView.builder(
                   itemCount: _agruparPorCuatrimestre(_calificaciones!).length,
                   itemBuilder: (context, index) {
-                    int cuatrimestre = _agruparPorCuatrimestre(_calificaciones!)
-                        .keys.elementAt(index);
-                    List<Map<String,
-                        dynamic>> calificacionesCuatrimestre = _agruparPorCuatrimestre(
-                        _calificaciones!)[cuatrimestre]!;
+                    int cuatrimestre = _agruparPorCuatrimestre(_calificaciones!).keys.elementAt(index);
+                    List<Map<String, dynamic>> calificacionesCuatrimestre = _agruparPorCuatrimestre(_calificaciones!)[cuatrimestre]!;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Cuatrimestre $cuatrimestre',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text('Cuatrimestre $cuatrimestre', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                         SizedBox(height: 10),
-                        ...calificacionesCuatrimestre.map((calificacion) =>
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Materia: ${calificacion['nombre']}',
-                                    style: TextStyle(fontSize: 18)),
-                                Text(
-                                    'Calificación: ${calificacion['calificacion']}',
-                                    style: TextStyle(fontSize: 18)),
-                                SizedBox(height: 10),
-                              ],
-                            )).toList(),
+                        ...calificacionesCuatrimestre.map((calificacion) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Materia: ${calificacion['nombre']}', style: TextStyle(fontSize: 18)),
+                            Text('Calificación: ${calificacion['calificacion']}', style: TextStyle(fontSize: 18)),
+                            SizedBox(height: 10),
+                          ],
+                        )).toList(),
                         SizedBox(height: 20),
                       ],
+
                     );
                   },
                 ),
