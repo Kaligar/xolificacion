@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
-
+import 'alumnos-admin.dart';
+import 'grupos-admin.dart';
+import 'maestros-admin.dart';
 class AdminScreen extends StatefulWidget {
   final int adminId;
 
@@ -73,6 +75,58 @@ class _AdminScreenState extends State<AdminScreen> {
                 minimumSize: Size(30, 50),
               ),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScreenAlumnosAdmin()),
+                );
+              },
+              child: Text('alumnos', style: TextStyle(
+                fontFamily: 'Hanuman',
+                fontSize: 30,
+                fontWeight: FontWeight.w300,
+                color: Color(0xFF000000),
+              )),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(30, 50),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScreenMaestrosAdmin()),
+                );
+              },
+              child: Text('maestros', style: TextStyle(
+                fontFamily: 'Hanuman',
+                fontSize: 30,
+                fontWeight: FontWeight.w300,
+                color: Color(0xFF000000),
+              )),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(30, 50),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScreenGruposAdmin()),
+                );
+              },
+              child: Text('grupos', style: TextStyle(
+                fontFamily: 'Hanuman',
+                fontSize: 30,
+                fontWeight: FontWeight.w300,
+                color: Color(0xFF000000),
+              )),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(30, 50),
+              ),
+            ),
+
             SizedBox(height: 8),
             Image.asset(
               'assets/img/perfil.png',
@@ -80,8 +134,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             SizedBox(height: 16),
             Text('Nombre: ${_admin!['nombre']}'),
-            Text('ID: ${_admin!['admin_id']}'),
-            // Add more admin information as needed
+            Text('ID: ${_admin!['id']}'),
           ],
         ),
       ),

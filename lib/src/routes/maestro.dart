@@ -12,47 +12,19 @@ class MaestroScreen extends StatefulWidget {
 }
 
 class _MaestroScreenState extends State<MaestroScreen> {
-  Map<String, dynamic>? _maestro;
-  List<Map<String, dynamic>>? _grupo;
-  bool _isLoading = true;
+  late Future<Map<String, dynamic>> _dataFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadMaestro();
-    _loadGrupo();
+    _dataFuture = _loadData();
   }
 
-  Future<void> _loadMaestro() async {
-    try {
-      DatabaseHelper dbHelper = DatabaseHelper();
-      final maestro = await dbHelper.getMaestroById(widget.maestroId);
-      setState(() {
-        _maestro = maestro;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print('Error loading maestro: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _loadGrupo() async {
-    try {
-      DatabaseHelper dbHelper = DatabaseHelper();
-      final grupo = await dbHelper.ListaGrupos(widget.maestroId);
-      setState(() {
-        _grupo = grupo;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print('Error al cargar grupo: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  Future<Map<String, dynamic>> _loadData() async {
+    final dbHelper = DatabaseHelper();
+    final maestro = await dbHelper.getMaestroById(widget.maestroId);
+    final grupo = await dbHelper.ListaGrupos(widget.maestroId);
+    return {'maestro': maestro, 'grupo': grupo};
   }
 
   @override
@@ -72,81 +44,97 @@ class _MaestroScreenState extends State<MaestroScreen> {
         ),
         centerTitle: true,
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _maestro == null
-          ? Center(child: Text('No se encontró información del maestro'))
-          : SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              child: Text(
-                'Salir',
-                style: TextStyle(
-                  fontFamily: 'Hanuman',
-                  fontSize: 30,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(30, 50),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _dataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('No se encontró información'));
+          } else {
+            final maestro = snapshot.data!['maestro'];
+            final grupo = snapshot.data!['grupo'] as List<Map<String, dynamic>>;
+            return _buildMaestroContent(maestro, grupo);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildMaestroContent(Map<String, dynamic>? maestro, List<Map<String, dynamic>> grupo) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            child: Text(
+              'Salir',
+              style: TextStyle(
+                fontFamily: 'Hanuman',
+                fontSize: 30,
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 16),
-            Center(
-              child: Image.asset(
-                'assets/img/perfil.png',
-                width: 100,
-              ),
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(30, 50),
             ),
-            SizedBox(height: 16),
-            Text('Nombre: ${_maestro!['nombre'] ?? 'No disponible'}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 16),
-            Text('Grupos asignados:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            if (_grupo != null && _grupo!.isNotEmpty)
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _grupo!.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text('Materia: ${_grupo![index]['nameMateria'] ?? 'No disponible'}'),
-                      subtitle: Text('grupo: ${_grupo![index]['studentGroup'] ?? 'No disponible'}'),
-                      trailing: ElevatedButton(
-                        child: Text('calificacar'),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CalificarScreen(
-                                grupo: _grupo![index]['studentGroup'],
-                                materia: _grupo![index]['nameMateria'],
-                                asignatura_id: _grupo![index]['asignatura_id'],
-                              ),
+          ),
+          SizedBox(height: 16),
+          Center(
+            child: Image.asset(
+              'assets/img/perfil.png',
+              width: 100,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text('Nombre: ${maestro?['nombre'] ?? 'No disponible'}',
+              style: TextStyle(fontSize: 18)),
+          SizedBox(height: 16),
+          Text('Grupos asignados:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 8),
+          if (grupo.isNotEmpty)
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: grupo.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: ListTile(
+                    title: Text('Materia: ${grupo[index]['nameMateria'] ?? 'No disponible'}'),
+                    subtitle: Text('grupo: ${grupo[index]['studentGroup'] ?? 'No disponible'}'),
+                    trailing: ElevatedButton(
+                      child: Text('calificar'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CalificarScreen(
+                              grupo: grupo[index]['studentGroup'],
+                              materia: grupo[index]['nameMateria'],
+                              grupo_id: grupo[index]['grupo_id'],
+                              asignatura_id: grupo[index]['asignatura_id'],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              )
-            else
-              Center(
-                child: Text('No hay grupos asignados', style: TextStyle(fontSize: 16)),
-              ),
-            ],
-        ),
+                  ),
+                );
+              },
+            )
+          else
+            Center(
+              child: Text('No hay grupos asignados', style: TextStyle(fontSize: 16)),
+            ),
+        ],
       ),
     );
   }

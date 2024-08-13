@@ -4,12 +4,14 @@ import '../data/database_helper.dart';
 class CalificarScreen extends StatefulWidget {
   final String grupo;
   final String materia;
+  final int grupo_id;
   final int asignatura_id;
 
   const CalificarScreen({
     Key? key,
     required this.grupo,
     required this.materia,
+    required this.grupo_id,
     required this.asignatura_id
   }) : super(key: key);
 
@@ -18,58 +20,34 @@ class CalificarScreen extends StatefulWidget {
 }
 
 class _CalificarScreenState extends State<CalificarScreen> {
-  List<Map<String, dynamic>> _estudiantes = [];
-  List<TextEditingController> _controllers = [];
-  bool isLoading = true;
+  late Future<List<Map<String, dynamic>>> _estudiantesFuture;
   final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    dbHelper.verificarTablaCalificaciones();
-    _cargarEstudiantes();
+    _estudiantesFuture = _cargarEstudiantes();
   }
 
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
+  Future<List<Map<String, dynamic>>> _cargarEstudiantes() async {
+    await dbHelper.verificarTablaCalificaciones();
+    return await dbHelper.cargarEstudiantes(widget.grupo_id);
   }
 
-  Future<void> _cargarEstudiantes() async {
-    try {
-      final estudiantes = await dbHelper.cargarEstudiantes(widget.grupo);
-      setState(() {
-        _estudiantes = estudiantes;
-        _controllers = List.generate(
-          estudiantes.length,
-              (index) => TextEditingController(text: estudiantes[index]['calificacion']?.toString() ?? ''),
-        );
-        isLoading = false;
-      });
-      print('Estudiantes cargados: $_estudiantes');
-    } catch (e) {
-      print('Error cargando estudiantes: $e');
-      _mostrarError('Error al cargar estudiantes');
-    }
-  }
-
-  Future<void> _guardarCalificaciones() async {
+  Future<void> _guardarCalificaciones(List<Map<String, dynamic>> estudiantes, List<TextEditingController> controllers) async {
     try {
       print('Iniciando guardado de calificaciones...');
-      for (int i = 0; i < _estudiantes.length; i++) {
-        var estudiante = _estudiantes[i];
-        var calificacion = double.tryParse(_controllers[i].text);
+      for (int i = 0; i < estudiantes.length; i++) {
+        var estudiante = estudiantes[i];
+        var calificacion = double.tryParse(controllers[i].text);
         if (calificacion != null) {
-          print('Intentando guardar calificación para estudiante ID: ${estudiante['id']}, Asignatura ID: ${widget.asignatura_id}, Calificación: $calificacion');
+          print('Intentando guardar calificación para estudiante ID: ${estudiante['id']}, Grupo ID: ${widget.grupo_id}, Calificación: $calificacion');
           await dbHelper.insertCalificacion({
             'estudiante_id': estudiante['id'],
-            'asignatura_id': widget.asignatura_id,
+            'asignatura_id': widget.asignatura_id, // This might need to be adjusted depending on how you're handling subjects
             'calificacion': calificacion,
           });
-          await dbHelper.verificarCalificacion(estudiante['id'], widget.asignatura_id);
+          await dbHelper.verificarCalificacion(estudiante[8], widget.asignatura_id);
           print('Calificación guardada con éxito');
         } else {
           print('Estudiante ID: ${estudiante['id']} no tiene calificación válida');
@@ -97,46 +75,71 @@ class _CalificarScreenState extends State<CalificarScreen> {
       appBar: AppBar(
         title: Text('Calificar ${widget.materia}'),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Grupo: ${widget.grupo}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _estudiantes.length,
-              itemBuilder: (context, index) {
-                final estudiante = _estudiantes[index];
-                return ListTile(
-                  title: Text(estudiante['nombre']),
-                  trailing: SizedBox(
-                    width: 100,
-                    child: TextField(
-                      controller: _controllers[index],
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Calificación',
-                      ),
-                      onChanged: (value) {
-                        _estudiantes[index]['calificacion'] = double.tryParse(value);
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          ElevatedButton(
-            onPressed: _guardarCalificaciones,
-            child: Text('Guardar Calificaciones'),
-          ),
-        ],
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _estudiantesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No hay estudiantes'));
+          } else {
+            return _buildEstudiantesList(snapshot.data!);
+          }
+        },
       ),
     );
+  }
+
+  Widget _buildEstudiantesList(List<Map<String, dynamic>> estudiantes) {
+    List<TextEditingController> controllers = List.generate(
+      estudiantes.length,
+          (index) => TextEditingController(text: estudiantes[index]['calificacion']?.toString() ?? ''),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Grupo: ${widget.grupo}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: estudiantes.length,
+            itemBuilder: (context, index) {
+              final estudiante = estudiantes[index];
+              return ListTile(
+                title: Text(estudiante['nombre']),
+                trailing: SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: controllers[index],
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Calificación',
+                    ),
+                    onChanged: (value) {
+                      estudiantes[index]['calificacion'] = double.tryParse(value);
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () => _guardarCalificaciones(estudiantes, controllers),
+          child: Text('Guardar Calificaciones'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
