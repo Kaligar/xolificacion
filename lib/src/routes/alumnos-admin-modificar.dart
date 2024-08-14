@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
 import 'alumnos-admin-modificar-state.dart';
+
 class ScreenAlumnosAdminModificar extends StatefulWidget {
   @override
   _ScreenAlumnosAdminModificar createState() => _ScreenAlumnosAdminModificar();
@@ -27,16 +28,30 @@ class _ScreenAlumnosAdminModificar extends State<ScreenAlumnosAdminModificar> {
 
   void _navigateToNextScreen(int studentId) {
     Navigator.push(
-       context,
-       MaterialPageRoute(builder: (context) => ScreenModificarAlumno(studentId: studentId))
+        context,
+        MaterialPageRoute(builder: (context) => ScreenModificarAlumno(studentId: studentId))
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Estudiantes'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Color(0XFF17A48B),
+          title: Text(
+            'Modificar Alumnos',
+            style: TextStyle(
+              fontFamily: 'Hanuman',
+              fontSize: 30,
+              fontWeight: FontWeight.w300,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+        ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -52,17 +67,33 @@ class _ScreenAlumnosAdminModificar extends State<ScreenAlumnosAdminModificar> {
                 children: [
                   Text(_estudiantes[index]['carrera'] ?? 'No disponible'),
                   SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () => _navigateToNextScreen(_estudiantes[index]['id']),
-                    child: Text('Ver'),
-                    style: ElevatedButton.styleFrom(
-                    ),
-                  ),
+                  _buildButton('Ver', () => _navigateToNextScreen(_estudiantes[index]['id'])),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontFamily: 'Hanuman',
+          fontSize: 20,
+          fontWeight: FontWeight.w300,
+          color: Colors.black,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }

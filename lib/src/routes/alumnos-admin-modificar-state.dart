@@ -54,7 +54,7 @@ class _ScreenModificarAlumnoState extends State<ScreenModificarAlumno> {
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pop();  // Vuelve a la pantalla anterior
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -106,8 +106,22 @@ class _ScreenModificarAlumnoState extends State<ScreenModificarAlumno> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Modificar Alumno'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Color(0XFF17A48B),
+          title: Text(
+            'Modificar Alumno',
+            style: TextStyle(
+              fontFamily: 'Hanuman',
+              fontSize: 30,
+              fontWeight: FontWeight.w300,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+        ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -115,8 +129,7 @@ class _ScreenModificarAlumnoState extends State<ScreenModificarAlumno> {
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
               TextFormField(
                 controller: _nombreController,
@@ -166,12 +179,35 @@ class _ScreenModificarAlumnoState extends State<ScreenModificarAlumno> {
                 },
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateStudentData,
-                child: Text('Guardar Cambios'),
-              ),
+              _buildButton('Guardar Cambios', _updateStudentData),
+              SizedBox(height: 16),
+              _buildButton('Salir', () {
+                Navigator.of(context).pop();
+              }),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontFamily: 'Hanuman',
+          fontSize: 20,
+          fontWeight: FontWeight.w300,
+          color: Colors.black,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(double.infinity, 50),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

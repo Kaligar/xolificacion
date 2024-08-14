@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/database_helper.dart';
+
 class ScreenGruposAdminVer extends StatefulWidget {
-
-
   @override
   _ScreenGruposAdminVer createState() => _ScreenGruposAdminVer();
 }
@@ -14,14 +13,14 @@ class _ScreenGruposAdminVer extends State<ScreenGruposAdminVer> {
   @override
   void initState() {
     super.initState();
-    _fetchEstudiantes();
+    _fetchGrupos();
   }
 
-  Future<void> _fetchEstudiantes() async {
+  Future<void> _fetchGrupos() async {
     DatabaseHelper dbHelper = DatabaseHelper();
-    List<Map<String, dynamic>> estudiantes = await dbHelper.getGrupos();
+    List<Map<String, dynamic>> grupos = await dbHelper.getGrupos();
     setState(() {
-      _grupos = estudiantes;
+      _grupos = grupos;
       _isLoading = false;
     });
   }
@@ -29,8 +28,22 @@ class _ScreenGruposAdminVer extends State<ScreenGruposAdminVer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Estudiantes'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Color(0XFF17A48B),
+          title: Text(
+            'Ver Grupos',
+            style: TextStyle(
+              fontFamily: 'Hanuman',
+              fontSize: 30,
+              fontWeight: FontWeight.w300,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+        ),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -39,8 +52,7 @@ class _ScreenGruposAdminVer extends State<ScreenGruposAdminVer> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(_grupos[index]['nombre']),
-            subtitle: Text('Edad: ${_grupos[index]['edad']}'),
-            trailing: Text(_grupos[index]['carrera'] ?? 'No disponible'),
+
           );
         },
       ),
@@ -54,13 +66,14 @@ class _ScreenGruposAdminVer extends State<ScreenGruposAdminVer> {
         text,
         style: TextStyle(
           fontFamily: 'Hanuman',
-          fontSize: 30,
+          fontSize: 20,
           fontWeight: FontWeight.w300,
           color: Colors.black,
         ),
       ),
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 50),
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

@@ -144,127 +144,42 @@ class DatabaseHelper {
     await db.insert('maestro', {'id': 2, 'nombre': 'Profesor García'});
     await db.insert('admin', {'id': 1, 'nombre': 'Admin Principal'});
 
-    await db.insert('curso',
-        {'id': 1, 'estudiante_id': 1, 'asignaturas_id': 1, 'maestro_id': 1});
-    await db.insert('curso',
-        {'id': 2, 'estudiante_id': 2, 'asignaturas_id': 2, 'maestro_id': 1});
-    await db.insert('curso',
-        {'id': 3, 'estudiante_id': 3, 'asignaturas_id': 3, 'maestro_id': 2});
-    await db.insert('curso',
-        {'id': 4, 'estudiante_id': 1, 'asignaturas_id': 4, 'maestro_id': 2});
+    await db.insert('curso', {'id': 1, 'estudiante_id': 1, 'asignaturas_id': 1, 'maestro_id': 1});
+    await db.insert('curso', {'id': 2, 'estudiante_id': 2, 'asignaturas_id': 2, 'maestro_id': 1});
+    await db.insert('curso', {'id': 3, 'estudiante_id': 3, 'asignaturas_id': 3, 'maestro_id': 2});
+    await db.insert('curso', {'id': 4, 'estudiante_id': 1, 'asignaturas_id': 4, 'maestro_id': 2});
 
 
     await db.insert('grupo', {'id': 1, 'nombre': 'TI2'});
     await db.insert('grupo', {'id': 2, 'nombre': 'ENR2'});
 
-    await db.insert(
-        'integrantes', {'id': 1, 'grupo_id': 1, 'estudiante_id': 1});
-    await db.insert(
-        'integrantes', {'id': 2, 'grupo_id': 1, 'estudiante_id': 2});
-    await db.insert(
-        'integrantes', {'id': 3, 'grupo_id': 2, 'estudiante_id': 3});
+    await db.insert('integrantes', {'id': 1, 'grupo_id': 1, 'estudiante_id': 1});
+    await db.insert('integrantes', {'id': 2, 'grupo_id': 1, 'estudiante_id': 2});
+    await db.insert('integrantes', {'id': 3, 'grupo_id': 2, 'estudiante_id': 3});
 
-    await db.insert('cursoimpartido',
-        {'id': 1, 'grupo_id': 1, 'asignatura_id': 1, 'maestro_id': 1});
-    await db.insert('cursoimpartido',
-        {'id': 2, 'grupo_id': 1, 'asignatura_id': 2, 'maestro_id': 2});
-    await db.insert('cursoimpartido',
-        {'id': 3, 'grupo_id': 1, 'asignatura_id': 3, 'maestro_id': 1});
-    await db.insert('cursoimpartido',
-        {'id': 4, 'grupo_id': 1, 'asignatura_id': 4, 'maestro_id': 2});
-    await db.insert('cursoimpartido',
-        {'id': 5, 'grupo_id': 2, 'asignatura_id': 1, 'maestro_id': 2});
-    await db.insert('cursoimpartido',
-        {'id': 6, 'grupo_id': 2, 'asignatura_id': 2, 'maestro_id': 1});
-    await db.insert('cursoimpartido',
-        {'id': 7, 'grupo_id': 2, 'asignatura_id': 3, 'maestro_id': 2});
-    await db.insert('cursoimpartido',
-        {'id': 8, 'grupo_id': 2, 'asignatura_id': 4, 'maestro_id': 1});
+    await db.insert('cursoimpartido', {'id': 1, 'grupo_id': 1, 'asignatura_id': 1, 'maestro_id': 1});
+    await db.insert('cursoimpartido', {'id': 2, 'grupo_id': 1, 'asignatura_id': 2, 'maestro_id': 2});
+    await db.insert('cursoimpartido', {'id': 3, 'grupo_id': 1, 'asignatura_id': 3, 'maestro_id': 1});
+    await db.insert('cursoimpartido', {'id': 4, 'grupo_id': 1, 'asignatura_id': 4, 'maestro_id': 2});
+    await db.insert('cursoimpartido', {'id': 5, 'grupo_id': 2, 'asignatura_id': 1, 'maestro_id': 2});
+    await db.insert('cursoimpartido', {'id': 6, 'grupo_id': 2, 'asignatura_id': 2, 'maestro_id': 1});
+    await db.insert('cursoimpartido', {'id': 7, 'grupo_id': 2, 'asignatura_id': 3, 'maestro_id': 2});
+    await db.insert('cursoimpartido', {'id': 8, 'grupo_id': 2, 'asignatura_id': 4, 'maestro_id': 1});
 
-    await db.insert('users', {
-      'id': 1,
-      'username': 'estudiante',
-      'password': 'estudiante',
-      'estudiante_id': 1,
-      'maestro_id': null,
-      'admin_id': null,
-      'role': 'estudiante'
-    });
-    await db.insert('users', {
-      'id': 4,
-      'username': 'estudiante2',
-      'password': 'estudiante2',
-      'estudiante_id': 2,
-      'maestro_id': null,
-      'admin_id': null,
-      'role': 'estudiante'
-    });
-    await db.insert('users', {
-      'id': 2,
-      'username': 'maestro',
-      'password': 'maestro',
-      'estudiante_id': null,
-      'maestro_id': 1,
-      'admin_id': null,
-      'role': 'maestro'
-    });
-    await db.insert('users', {
-      'id': 5,
-      'username': 'maestro2',
-      'password': 'maestro2',
-      'estudiante_id': null,
-      'maestro_id': 2,
-      'admin_id': null,
-      'role': 'maestro'
-    });
-    await db.insert('users', {
-      'id': 3,
-      'username': 'admin',
-      'password': 'admin',
-      'estudiante_id': null,
-      'maestro_id': null,
-      'admin_id': 1,
-      'role': 'admin'
-    });
+    await db.insert('users', {'id': 1, 'username': 'estudiante', 'password': 'estudiante', 'estudiante_id': 1, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
+    await db.insert('users', {'id': 4, 'username': 'estudiante2', 'password': 'estudiante2', 'estudiante_id': 2, 'maestro_id': null, 'admin_id': null, 'role': 'estudiante'});
+    await db.insert('users', {'id': 2, 'username': 'maestro', 'password': 'maestro', 'estudiante_id': null, 'maestro_id': 1, 'admin_id': null, 'role': 'maestro'});
+    await db.insert('users', {'id': 5, 'username': 'maestro2', 'password': 'maestro2', 'estudiante_id': null, 'maestro_id': 2, 'admin_id': null, 'role': 'maestro'});
+    await db.insert('users', {'id': 3, 'username': 'admin', 'password': 'admin', 'estudiante_id': null, 'maestro_id': null, 'admin_id': 1, 'role': 'admin'});
 
-    await db.insert('asignaturas', {
-      'id': 1,
-      'nombre': 'Matemáticas',
-      'descripcion': 'Curso de Matemáticas básicas',
-      'cuatrimestre': 2
-    });
-    await db.insert('asignaturas', {
-      'id': 2,
-      'nombre': 'Historia',
-      'descripcion': 'Curso de Historia universal',
-      'cuatrimestre': 2
-    });
-    await db.insert('asignaturas', {
-      'id': 3,
-      'nombre': 'programacion',
-      'descripcion': 'Curso de Historia universal',
-      'cuatrimestre': 3
-    });
-    await db.insert('asignaturas', {
-      'id': 4,
-      'nombre': 'filosofia',
-      'descripcion': 'xd',
-      'cuatrimestre': 4
-    });
+    await db.insert('asignaturas', {'id': 1, 'nombre': 'Matemáticas', 'descripcion': 'Curso de Matemáticas básicas', 'cuatrimestre': 2});
+    await db.insert('asignaturas', {'id': 2, 'nombre': 'Historia', 'descripcion': 'Curso de Historia universal', 'cuatrimestre': 2});
+    await db.insert('asignaturas', {'id': 3, 'nombre': 'programacion', 'descripcion': 'Curso de Historia universal', 'cuatrimestre': 3});
+    await db.insert('asignaturas', {'id': 4, 'nombre': 'filosofia', 'descripcion': 'xd', 'cuatrimestre': 4});
 
 
-    await db.insert('becas', {
-      'id': 1,
-      'estudiante_id': 1,
-      'tipo': 'Beca de excelencia',
-      'monto': 1000.0
-    });
-    await db.insert('becas', {
-      'id': 2,
-      'estudiante_id': 2,
-      'tipo': 'Beca deportiva',
-      'monto': 500.0
-    });
+    await db.insert('becas', {'id': 1, 'estudiante_id': 1, 'tipo': 'Beca de excelencia', 'monto': 1000.0});
+    await db.insert('becas', {'id': 2, 'estudiante_id': 2, 'tipo': 'Beca deportiva', 'monto': 500.0});
 
     print("Datos de prueba insertados exitosamente.");
   }
